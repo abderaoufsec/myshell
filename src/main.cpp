@@ -1,7 +1,9 @@
-#include <iostream>
+#include "myshell/shell.hpp"
 
 int main()
 {
-    std::cout << "myshell v0.1.0\n";
+    myshell::Shell shell;
+    shell.run();
+
     return 0;
 }

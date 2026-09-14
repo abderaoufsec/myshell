@@ -20,10 +20,36 @@ add_executable(myshell
     src/parser.cpp
     src/executor.cpp
     src/builtins.cpp
-    
+    src/jobs.cpp
+)
+
+add_executable(myshell_redirection_tests
+    tests/test_redirections.cpp
+    src/parser.cpp
+    src/executor.cpp
+    src/builtins.cpp
+    src/jobs.cpp
+)
+
+add_executable(myshell_smoke_tests
+    tests/test_shell_smoke.cpp
+    src/parser.cpp
+    src/executor.cpp
+    src/builtins.cpp
+    src/jobs.cpp
 )
 
 target_include_directories(myshell
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_include_directories(myshell_redirection_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_include_directories(myshell_smoke_tests
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include
 )
@@ -43,3 +69,5 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 enable_testing()
+add_test(NAME redirection_regression COMMAND myshell_redirection_tests)
+add_test(NAME shell_smoke COMMAND myshell_smoke_tests)

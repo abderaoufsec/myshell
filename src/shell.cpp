@@ -1,5 +1,6 @@
 #include "myshell/shell.hpp"
 
+#include <csignal>
 #include <iostream>
 #include <string>
 
@@ -8,6 +9,9 @@ namespace myshell
 
 void Shell::run()
 {
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+
     while (true)
     {
         std::cout << "myshell$ ";

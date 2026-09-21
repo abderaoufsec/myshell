@@ -21,6 +21,7 @@ add_executable(myshell
     src/executor.cpp
     src/builtins.cpp
     src/jobs.cpp
+    src/posix_compat.cpp
 )
 
 add_executable(myshell_redirection_tests
@@ -29,6 +30,7 @@ add_executable(myshell_redirection_tests
     src/executor.cpp
     src/builtins.cpp
     src/jobs.cpp
+    src/posix_compat.cpp
 )
 
 add_executable(myshell_smoke_tests
@@ -37,6 +39,7 @@ add_executable(myshell_smoke_tests
     src/executor.cpp
     src/builtins.cpp
     src/jobs.cpp
+    src/posix_compat.cpp
 )
 
 target_include_directories(myshell

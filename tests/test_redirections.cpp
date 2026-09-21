@@ -7,19 +7,23 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <system_error>
 
 int main()
 {
     namespace fs = std::filesystem;
     using namespace std::chrono;
 
-    const fs::path out = fs::path("redirection_output.txt");
-    const fs::path input = fs::path("redirection_input.txt");
+    // Use unique filenames to avoid conflicts
+    const fs::path out = fs::path("redirection_output_test.txt");
+    const fs::path input = fs::path("redirection_input_test.txt");
 
     try
     {
-        fs::remove(out);
-        fs::remove(input);
+        // Try to remove files, ignore errors if they don't exist
+        std::error_code ec;
+        fs::remove(out, ec);
+        fs::remove(input, ec);
 
         std::ofstream input_writer(input);
         input_writer << "first\n";
@@ -28,7 +32,7 @@ int main()
         myshell::Parser parser;
         myshell::Executor executor;
 
-        auto pipeline_output = parser.parse("echo hello > redirection_output.txt");
+        auto pipeline_output = parser.parse("echo hello > redirection_output_test.txt");
         if (executor.execute(pipeline_output) != 0)
         {
             std::cerr << "output redirection test failed\n";
@@ -44,7 +48,7 @@ int main()
             return 1;
         }
 
-        auto pipeline_append = parser.parse("echo second >> redirection_output.txt");
+        auto pipeline_append = parser.parse("echo second >> redirection_output_test.txt");
         if (executor.execute(pipeline_append) != 0)
         {
             std::cerr << "append redirection test failed\n";
@@ -62,17 +66,18 @@ int main()
             return 1;
         }
 
-        auto pipeline_input = parser.parse("cat < redirection_input.txt");
+        auto pipeline_input = parser.parse("cat < redirection_input_test.txt");
         if (executor.execute(pipeline_input) != 0)
         {
             std::cerr << "input redirection test failed\n";
             return 1;
         }
 
-        const fs::path pipeline_out = fs::path("redirection_pipeline_output.txt");
-        fs::remove(pipeline_out);
+        const fs::path pipeline_out = fs::path("redirection_pipeline_output_test.txt");
+        std::error_code ec2;
+        fs::remove(pipeline_out, ec2);
 
-        auto pipeline_chain = parser.parse("echo hello | cat > redirection_pipeline_output.txt");
+        auto pipeline_chain = parser.parse("echo hello | cat > redirection_pipeline_output_test.txt");
         if (executor.execute(pipeline_chain) != 0)
         {
             std::cerr << "pipeline execution test failed\n";
@@ -103,9 +108,9 @@ int main()
             return 1;
         }
 
-        fs::remove(out);
-        fs::remove(input);
-        fs::remove(pipeline_out);
+        fs::remove(out, ec);
+        fs::remove(input, ec);
+        fs::remove(pipeline_out, ec);
     }
     catch (const std::exception& ex)
     {
